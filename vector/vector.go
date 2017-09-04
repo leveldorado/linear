@@ -41,3 +41,36 @@ func (a Vec) Normalize() (c Vec) {
 	scalar := 1 / a.Magnitude()
 	return a.ScalarMultiply(scalar)
 }
+
+func (a Vec) DotProduct(b Vec) (sum float64) {
+	for k, it := range a {
+		sum += it * b[k]
+	}
+	return
+}
+
+func (a Vec) AngleRad(b Vec) float64 {
+	return math.Acos(a.DotProduct(b) / (a.Magnitude() * b.Magnitude()))
+}
+
+func (a Vec) AngleDegrees(b Vec) float64 {
+	return a.AngleRad(b) * 180 / math.Pi
+}
+
+func (a Vec) IsParalel(b Vec) bool  {
+	aMagnitude := a.Magnitude()
+	bMagnitude := b.Magnitude()
+	if bMagnitude > aMagnitude {
+		bMagnitude, aMagnitude = aMagnitude, bMagnitude
+	}
+	scalar := aMagnitude / bMagnitude
+	return scalar == float64(int64(scalar))
+}
+
+const (
+	tolerance = 0.00000000001
+)
+
+func (a Vec) IsOrthogonal(b Vec) bool {
+	return math.Abs(a.DotProduct(b)) < tolerance
+}
